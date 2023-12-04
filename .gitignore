@@ -8,3 +8,6 @@ raw_data/
 models/
 *.joblib
 *.h5
+
+# Keys / Env. Variables
+*.env
