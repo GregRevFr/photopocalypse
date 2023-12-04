@@ -2,6 +2,9 @@ from fastapi import FastAPI, UploadFile, File
 import uvicorn
 from starlette.responses import StreamingResponse
 import io
+import models.model_try
+import numpy as np
+import cv2
 
 app = FastAPI()
 
@@ -30,7 +33,13 @@ async def upload_image(file: UploadFile = File(...)):
         None
     """
     contents = await file.read()  # Read file contents
-    headers = {"Classification": "This image is blurry"}
+
+     # Convert bytes to a NumPy array
+    nparr = np.frombuffer(contents, np.uint8) #! Here we need to add the final preprocessing
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    Classification = models.model_try.predict_blurr_percentage(image)
+    headers = {"Classification": Classification}
     return StreamingResponse(io.BytesIO(contents), media_type=file.content_type, headers=headers)
 
 if __name__ == "__main__":
