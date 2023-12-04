@@ -1,2 +1,2 @@
-# __*Repository of project-1451*__
+# __*Repository of photopocalypse*__
 /home/gregrevill/code/GregRevFr/photopocalypse/

@@ -1,0 +1,10 @@
+# raw data
+raw_data/
+*.csv
+*.sqlite
+*.zip
+
+# saved models
+models/
+*.joblib
+*.h5
