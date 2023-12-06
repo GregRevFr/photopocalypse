@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File
 import uvicorn
 from starlette.responses import StreamingResponse
 import io
-import models.model_try
+import photopocalypse.prediction as prediction
 import numpy as np
 import cv2
 
@@ -20,6 +20,7 @@ def read_root():
 
 @app.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
+    #TODO This needs refactoring (move preprocessing to preprocessor)
     """
     Uploads an image file and returns a streaming response with the file contents.
 
@@ -38,7 +39,7 @@ async def upload_image(file: UploadFile = File(...)):
     nparr = np.frombuffer(contents, np.uint8) #! Here we need to add the final preprocessing
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-    Classification = models.model_try.predict_blurr_percentage(image)
+    Classification = prediction.predict_blurr_percentage(image)
     headers = {"Classification": Classification}
     return StreamingResponse(io.BytesIO(contents), media_type=file.content_type, headers=headers)
 
