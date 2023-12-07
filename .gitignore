@@ -11,3 +11,4 @@ models/
 
 # Keys / Env. Variables
 *.env
+notebooks/notebook_leo.ipynb
