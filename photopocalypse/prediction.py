@@ -5,17 +5,7 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import cv2
 import os
 
-
-# Get the current directory
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# Define the relative path to the model file
-relative_path = "models/blurr_model.h5"
-# Join the current directory with the relative path
-model_path = os.path.join(current_dir, relative_path)
-# Load the model
-model = load_model(model_path)
-
-def predict_blurr_percentage(image):
+def predict_blurr_percentage(image, model):
     """
     Predicts the blur percentage of an image.
 
