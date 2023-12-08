@@ -1,39 +1,33 @@
-## Run the FastAPI server
+# Run the FastAPI server
 run-api:
 	@echo "Starting FastAPI server..."
 	uvicorn photopocalypse.api.fast:app --host 0.0.0.0 --port 8080 --reload
 
-# Defining variables for convenience
-IMAGE_NAME=phurge-image-try
-INTEL_IMAGE_TAG=$(IMAGE_NAME):intel
-PROD_IMAGE_TAG=$(IMAGE_NAME):prod
+# Variables
+GCP_REGION := europe-west1
+REPO_NAME := phurge
+GCP_PROJECT := bootcamp-23
+IMAGE_NAME := $(GCP_REGION)-docker.pkg.dev/$(GCP_PROJECT)/$(REPO_NAME)/$(REPO_NAME)
+MEMORY_SIZE := 8Gi
 
-# Default target
-all: build-prod build-intel tag push deploy
+.PHONY: build-prod build-intel tag-intel push-intel deploy
 
-# Default target
-all-intel: build-intel tag push deploy
-
-# Build the production Docker image
+# Build production image
 build-prod:
-	docker build -t $(PROD_IMAGE_TAG) .
+	docker build -t $(IMAGE_NAME):prod .
 
-# Build the Intel architecture Docker image
+# Build Intel image
 build-intel:
-	docker build --platform linux/amd64 -t phurge:intel .
+	docker build --platform linux/amd64 -t $(REPO_NAME):intel .
 
-# Tag the Intel image
-tag:
-	docker tag phurge:intel $(INTEL_IMAGE_TAG)
+# Tag Intel image
+tag-intel: build-intel
+	docker tag $(REPO_NAME):intel $(IMAGE_NAME):intel
 
-# Push the Intel image to the registry
-push:
-	docker push $(INTEL_IMAGE_TAG)
+# Push Intel image to GCP
+push-intel: tag-intel
+	docker push $(IMAGE_NAME):intel
 
-# Deploy the Intel image using gcloud
-deploy:
-	gcloud run deploy --image $(INTEL_IMAGE_TAG) --memory 8Gi --region europe-west1
-
-# Helper target to clean up local images
-clean:
-	docker rmi $(PROD_IMAGE_TAG) phurge:intel $(INTEL_IMAGE_TAG)
+# Deploy to Google Cloud Run
+deploy: push-intel
+	gcloud run deploy --image $(IMAGE_NAME):intel --memory $(MEMORY_SIZE) --region $(GCP_REGION)
