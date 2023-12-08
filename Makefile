@@ -4,12 +4,15 @@ run-api:
 	uvicorn photopocalypse.api.fast:app --host 0.0.0.0 --port 8080 --reload
 
 # Defining variables for convenience
-IMAGE_NAME=phurge-image
+IMAGE_NAME=phurge-image-try
 INTEL_IMAGE_TAG=$(IMAGE_NAME):intel
 PROD_IMAGE_TAG=$(IMAGE_NAME):prod
 
 # Default target
 all: build-prod build-intel tag push deploy
+
+# Default target
+all-intel: build-intel tag push deploy
 
 # Build the production Docker image
 build-prod:
@@ -29,7 +32,7 @@ push:
 
 # Deploy the Intel image using gcloud
 deploy:
-	gcloud run deploy --image $(INTEL_IMAGE_TAG) --memory 2Gi --region europe-west1
+	gcloud run deploy --image $(INTEL_IMAGE_TAG) --memory 8Gi --region europe-west1
 
 # Helper target to clean up local images
 clean:
