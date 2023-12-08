@@ -58,4 +58,4 @@ async def upload_image(file: UploadFile = File(...)):
     return StreamingResponse(io.BytesIO(contents), media_type=file.content_type, headers=headers)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
