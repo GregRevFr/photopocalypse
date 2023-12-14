@@ -54,6 +54,8 @@ async def upload_image(file: UploadFile = File(...)):
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
     Classification = prediction.predict_blurr_percentage(image, blurr_model)
+
+
     headers = {"Classification": Classification}
     return StreamingResponse(io.BytesIO(contents), media_type=file.content_type, headers=headers)
 
